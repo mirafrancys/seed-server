@@ -1,15 +1,20 @@
-import "dotenv/config";
-import express, { NextFunction, Request, Response } from 'express';
-import cors from 'cors';
-//import routes from './routes/index';
+import dotenv from "dotenv";
+dotenv.config();
 
-const port = 3100;
+import express from 'express';
+import cors from 'cors';
+import routes from "./routes/route";
+
+let port = 3100;
+if (process.env.PORT){
+  port = +process.env.PORT || 3200;
+} 
 
 const app = express()
 //app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 //app.use(cors<Request>());
-//app.use(routes);
+app.use('/api', routes);
 
 /*
 for(const filename of fs.readdirSync(pathToApi)) {
@@ -31,6 +36,10 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   res.status(status || 500).send({error: message});
 });
 */
-app.listen(port, () => {
-  console.log('Server is running on port ', port);
+const server = app.listen(port, '0.0.0.0', (error) => {
+  if (error){
+    throw error
+  }
+  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Listening on ${JSON.stringify(server.address())}`);
 });
